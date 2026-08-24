@@ -11,7 +11,8 @@ export default {
 		[
 			"@semantic-release/exec",
 			{
-				prepareCmd: "pnpm version ${nextRelease.version} --no-git-tag-version",
+				prepareCmd:
+					"pnpm version ${nextRelease.version} --no-git-tag-version --no-git-checks",
 				publishCmd:
 					"pnpm publish --tag ${nextRelease.channel || 'latest'} --no-git-checks",
 				addChannelCmd:
