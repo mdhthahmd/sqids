@@ -37,6 +37,7 @@
 		"provenance": true
 	},
 	"scripts": {
+		"benchmark": "vitest bench --run",
 		"build": "tsdown",
 		"dev": "tsdown --watch",
 		"clean": "rm -rf cjs esm dist coverage node_modules/.cache",
