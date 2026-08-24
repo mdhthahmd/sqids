@@ -1,7 +1,7 @@
 {
 	"name": "@mdhthahmd/sqids",
 	"type": "module",
-	"version": "1.0.0-next.2",
+	"version": "1.0.0",
 	"description": "Generate short unique IDs from numbers",
 	"license": "MIT",
 	"author": "Midhath Ahmed <mdhthahmd@gmail.com>",
