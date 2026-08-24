@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { add, hello, subtract } from "../src/sqid.js";
+import { add, hello, subtract } from "../src/sqids.js";
 
 describe("hello", () => {
 	it("greets the world by default", () => {
