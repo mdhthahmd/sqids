@@ -1,7 +1,7 @@
 {
 	"name": "@mdhthahmd/sqids",
 	"type": "module",
-	"version": "1.0.0",
+	"version": "1.1.0-next.1",
 	"description": "Generate short unique IDs from numbers",
 	"license": "MIT",
 	"author": "Midhath Ahmed <mdhthahmd@gmail.com>",
@@ -37,6 +37,7 @@
 		"provenance": true
 	},
 	"scripts": {
+		"benchmark": "vitest bench --run",
 		"build": "tsdown",
 		"dev": "tsdown --watch",
 		"clean": "rm -rf cjs esm dist coverage node_modules/.cache",
