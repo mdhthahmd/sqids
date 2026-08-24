@@ -47,6 +47,10 @@ web_modules/
 # TypeScript cache
 *.tsbuildinfo
 
+# Generated package output
+/cjs/
+/esm/
+
 # Optional npm cache directory
 .npm
 

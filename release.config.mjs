@@ -12,8 +12,7 @@ export default {
 			"@semantic-release/exec",
 			{
 				prepareCmd: "pnpm version ${nextRelease.version} --no-git-tag-version",
-				publishCmd:
-					"npm publish --tag ${nextRelease.channel || 'latest'}",
+				publishCmd: "npm publish --tag ${nextRelease.channel || 'latest'}",
 				addChannelCmd:
 					"pnpm dist-tag add $(pnpm pkg get name --json | tr -d '\"')@${nextRelease.version} ${nextRelease.channel}",
 			},
