@@ -112,7 +112,7 @@ Enable BigInt mode when values may exceed `Number.MAX_SAFE_INTEGER`. BigInt mode
 ```javascript
 import Sqids from "@mdhthahmd/sqids";
 
-const sqids = new Sqids({ bigint: true });
+const sqids = new Sqids({ mode: "bigint" });
 const values = [0n, 9_007_199_254_740_992n, 18_446_744_073_709_551_615n];
 
 const id = sqids.encode(values);
@@ -125,7 +125,7 @@ Number mode and BigInt mode generate the same ID for values within the safe-inte
 
 ```javascript
 new Sqids().encode([1, 2, 3]) ===
-  new Sqids({ bigint: true }).encode([1n, 2n, 3n]); // true
+  new Sqids({ mode: "bigint" }).encode([1n, 2n, 3n]); // true
 ```
 
 ## ⚙️ Configuration
