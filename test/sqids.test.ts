@@ -65,7 +65,7 @@ const maxUint64 = (1n << 64n) - 1n;
 
 describe("bigint", () => {
 	it("round-trips values across the uint64 range", () => {
-		const sqids = new Sqids({ bigint: true });
+		const sqids = new Sqids({ mode: "bigint" });
 		const numbers = [0n, 1n, BigInt(Number.MAX_SAFE_INTEGER), maxUint64];
 
 		expect(sqids.decode(sqids.encode(numbers))).toEqual(numbers);
@@ -73,7 +73,7 @@ describe("bigint", () => {
 
 	it("uses the same encoding as number mode for safe integers", () => {
 		const numberSqids = new Sqids();
-		const bigintSqids = new Sqids({ bigint: true });
+		const bigintSqids = new Sqids({ mode: "bigint" });
 
 		expect(bigintSqids.encode([1n, 2n, 3n])).toBe(
 			numberSqids.encode([1, 2, 3]),
@@ -82,7 +82,7 @@ describe("bigint", () => {
 
 	it("round-trips padded IDs", () => {
 		const sqids = new Sqids({
-			bigint: true,
+			mode: "bigint",
 			minLength: defaultOptions.alphabet.length,
 		});
 		const numbers = [0n, maxUint64];
@@ -91,7 +91,7 @@ describe("bigint", () => {
 	});
 
 	it("rejects values outside the uint64 range and non-bigints", () => {
-		const sqids = new Sqids({ bigint: true });
+		const sqids = new Sqids({ mode: "bigint" });
 		const encodingError = /Encoding supports bigints between 0n and/;
 
 		expect(() => sqids.encode([-1n])).toThrow(encodingError);
@@ -102,7 +102,7 @@ describe("bigint", () => {
 	});
 
 	it("does not decode unsafe bigint values in number mode", () => {
-		const bigintSqids = new Sqids({ bigint: true });
+		const bigintSqids = new Sqids({ mode: "bigint" });
 		const numberSqids = new Sqids();
 		const id = bigintSqids.encode([maxUint64]);
 
@@ -112,9 +112,21 @@ describe("bigint", () => {
 
 	it("preserves mode-specific return types", () => {
 		expectTypeOf(new Sqids().decode("")).toEqualTypeOf<number[]>();
-		expectTypeOf(new Sqids({ bigint: true }).decode("")).toEqualTypeOf<
+		expectTypeOf(new Sqids({ mode: "number" }).decode("")).toEqualTypeOf<
+			number[]
+		>();
+		expectTypeOf(new Sqids({ mode: "bigint" }).decode("")).toEqualTypeOf<
 			bigint[]
 		>();
+	});
+
+	it("exposes number mode as the default option", () => {
+		expect(defaultOptions.mode).toBe("number");
+	});
+
+	it("does not accept the removed bigint option", () => {
+		// @ts-expect-error bigint was replaced by mode
+		new Sqids({ bigint: true });
 	});
 
 	it("rejects bigints in number mode", () => {

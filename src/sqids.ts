@@ -1,12 +1,12 @@
-type SqidsInteger<BigIntMode extends boolean> = BigIntMode extends true
+type SqidsInteger<Mode extends "number" | "bigint"> = Mode extends "bigint"
 	? bigint
 	: number;
 
-export interface SqidsOptions<BigIntMode extends boolean = false> {
+export interface SqidsOptions<Mode extends "number" | "bigint" = "number"> {
 	alphabet?: string;
 	minLength?: number;
 	blocklist?: Set<string>;
-	bigint?: BigIntMode;
+	mode?: Mode;
 }
 
 const maxUint64 = (1n << 64n) - 1n;
@@ -14,6 +14,7 @@ const maxUint64 = (1n << 64n) - 1n;
 export const defaultOptions = {
 	alphabet: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
 	minLength: 0,
+	mode: "number" as const,
 	blocklist: new Set<string>([
 		"0rgasm",
 		"1d10t",
@@ -578,18 +579,18 @@ export const defaultOptions = {
 	]),
 };
 
-export default class Sqids<BigIntMode extends boolean = false> {
+export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 	private alphabet: string;
 	private minLength: number;
 	private blocklist: Set<string>;
-	private bigintMode: BigIntMode;
+	private mode: Mode;
 
-	constructor(options?: SqidsOptions<BigIntMode>) {
+	constructor(options?: SqidsOptions<Mode>) {
 		const alphabet = options?.alphabet ?? defaultOptions.alphabet;
 		const minLength = options?.minLength ?? defaultOptions.minLength;
 		const blocklist = options?.blocklist ?? defaultOptions.blocklist;
 
-		this.bigintMode = (options?.bigint ?? false) as BigIntMode;
+		this.mode = (options?.mode ?? defaultOptions.mode) as Mode;
 
 		if (new Blob([alphabet]).size !== alphabet.length) {
 			throw new Error("Alphabet cannot contain multibyte characters");
@@ -633,13 +634,13 @@ export default class Sqids<BigIntMode extends boolean = false> {
 		this.blocklist = filteredBlocklist;
 	}
 
-	encode(numbers: SqidsInteger<BigIntMode>[]): string {
+	encode(numbers: SqidsInteger<Mode>[]): string {
 		if (numbers.length === 0) {
 			return "";
 		}
 
 		const normalizedNumbers = numbers.map((number) => {
-			if (this.bigintMode) {
+			if (this.mode === "bigint") {
 				if (
 					typeof number !== "bigint" ||
 					number < 0n ||
@@ -669,17 +670,17 @@ export default class Sqids<BigIntMode extends boolean = false> {
 		return this.encodeNumbers(normalizedNumbers);
 	}
 
-	decode(id: string): SqidsInteger<BigIntMode>[] {
+	decode(id: string): SqidsInteger<Mode>[] {
 		const ret: bigint[] = [];
 
 		if (id === "") {
-			return ret as SqidsInteger<BigIntMode>[];
+			return ret as SqidsInteger<Mode>[];
 		}
 
 		const alphabetChars = this.alphabet.split("");
 		for (const c of id.split("")) {
 			if (!alphabetChars.includes(c)) {
-				return ret as SqidsInteger<BigIntMode>[];
+				return ret as SqidsInteger<Mode>[];
 			}
 		}
 
@@ -697,13 +698,13 @@ export default class Sqids<BigIntMode extends boolean = false> {
 				const chunk = chunks[0];
 				if (!chunk) {
 					return (
-						this.bigintMode ? ret : ret.map(Number)
-					) as SqidsInteger<BigIntMode>[];
+						this.mode === "bigint" ? ret : ret.map(Number)
+					) as SqidsInteger<Mode>[];
 				}
 
 				const number = this.toNumber(chunk, alphabet.slice(1));
 				if (number > this.maxValue()) {
-					return [] as SqidsInteger<BigIntMode>[];
+					return [] as SqidsInteger<Mode>[];
 				}
 
 				ret.push(number);
@@ -715,11 +716,11 @@ export default class Sqids<BigIntMode extends boolean = false> {
 			slicedId = chunks.slice(1).join(separator);
 		}
 
-		if (this.bigintMode) {
-			return ret as SqidsInteger<BigIntMode>[];
+		if (this.mode === "bigint") {
+			return ret as SqidsInteger<Mode>[];
 		}
 
-		return ret.map(Number) as SqidsInteger<BigIntMode>[];
+		return ret.map(Number) as SqidsInteger<Mode>[];
 	}
 
 	private encodeNumbers(numbers: bigint[], increment = 0): string {
@@ -841,6 +842,6 @@ export default class Sqids<BigIntMode extends boolean = false> {
 	}
 
 	private maxValue(): bigint {
-		return this.bigintMode ? maxUint64 : BigInt(Number.MAX_SAFE_INTEGER);
+		return this.mode === "bigint" ? maxUint64 : BigInt(Number.MAX_SAFE_INTEGER);
 	}
 }

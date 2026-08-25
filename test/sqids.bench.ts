@@ -5,7 +5,7 @@ const sqids = new Sqids();
 const numbers = [1, 2, 3, Number.MAX_SAFE_INTEGER];
 const id = sqids.encode(numbers);
 
-const bigintSqids = new Sqids({ bigint: true });
+const bigintSqids = new Sqids({ mode: "bigint" });
 const bigints = [1n, 2n, 3n, (1n << 64n) - 1n];
 const bigintId = bigintSqids.encode(bigints);
 
