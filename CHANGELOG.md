@@ -1,3 +1,13 @@
+## [2.0.0](https://github.com/mdhthahmd/sqids/compare/v1.1.0...v2.0.0) (2026-08-25)
+
+### ⚠ BREAKING CHANGES
+
+* replace the bigint boolean option with mode: "number" | "bigint".
+
+### Features
+
+* replace bigint option with mode ([0235ba6](https://github.com/mdhthahmd/sqids/commit/0235ba623a4860fe662d52f0286e0f1a036ac3d2))
+
 ## [2.0.0-next.1](https://github.com/mdhthahmd/sqids/compare/v1.1.0-next.1...v2.0.0-next.1) (2026-08-25)
 
 ### ⚠ BREAKING CHANGES
