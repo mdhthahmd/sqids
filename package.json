@@ -2,7 +2,8 @@
 	"name": "sqids-monorepo",
 	"private": true,
 	"type": "module",
-	"description": "Sqids library and consumer examples",
+	"version": "2.0.0",
+	"description": "Generate short unique IDs from numbers",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
