@@ -44,6 +44,7 @@
 - [Quick start](#-quick-start)
 - [BigInt support](#-bigint-support)
 - [Configuration](#️-configuration)
+- [Example APIs](#-example-apis)
 - [Development](#️-development)
 - [License](#-license)
 
@@ -169,24 +170,66 @@ const id = sqids.encode([1, 2, 3]); // "se8ojk"
 const numbers = sqids.decode(id); // [1, 2, 3]
 ```
 
-## 🛠️ Development
+## 🧪 Example APIs
 
-Install dependencies:
+The workspace includes two consumer applications that use the published `@mdhthahmd/sqids@2.0.0` package:
+
+- `examples/hono-api` — Node.js ESM API on port 3000
+- `examples/nestjs-api` — NestJS CommonJS API on port 3001
+
+Start both APIs in watch mode:
 
 ```bash
-pnpm install
+pnpm dev:examples
 ```
 
-Common commands:
+For manual testing, open `bruno/requests/api` as a collection in Bruno and select the `hono` or `nestjs` environment. Run each folder's `encode` request before its `decode` request.
+
+## 🛠️ Development
+
+### Dev Container
+
+The recommended setup is the repository's Dev Container. It provides Node.js 24.19, pnpm 11.22, GitHub CLI, Biome, Vitest Explorer, Bruno, and the configured coding-agent tools.
+
+1. Install Docker and a Dev Container-compatible editor, such as VS Code with the Dev Containers extension.
+2. Clone the repository and open it in VS Code.
+3. Run **Dev Containers: Reopen in Container** from the command palette.
+4. Wait for `pnpm install --frozen-lockfile` to finish automatically.
+5. Run `pnpm test:all` to verify the workspace.
+
+To apply changes made to `.devcontainer/devcontainer.json`, run **Dev Containers: Rebuild Container**.
+
+### Local setup
+
+Install Node.js 24.19 and pnpm 11.22, then run:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm test:all
+```
+
+### Workspace layout
+
+| Path | Purpose |
+| --- | --- |
+| `lib` | Published Sqids package, source, tests, and benchmarks |
+| `examples/hono-api` | ESM consumer example |
+| `examples/nestjs-api` | CommonJS consumer example |
+| `bruno/requests/api` | Bruno collection for both example APIs |
+
+### Commands
 
 | Command | Description |
 | --- | --- |
-| `pnpm build` | Build the ESM and CommonJS packages |
-| `pnpm test:all` | Run type checks, tests, and Biome checks |
-| `pnpm test:coverage` | Run tests and generate coverage |
+| `pnpm build` | Build the library and all example applications |
+| `pnpm dev:lib` | Rebuild the library in watch mode |
+| `pnpm dev:examples` | Start both example APIs in watch mode |
+| `pnpm test:all` | Build, type-check, test, and run Biome CI checks |
+| `pnpm test:coverage` | Run the library tests with coverage |
 | `pnpm test:package` | Validate the packed npm package and its types |
-| `pnpm benchmark` | Run the Vitest performance benchmarks |
-| `pnpm check` | Format and lint the repository with Biome |
+| `pnpm benchmark` | Run the library's Vitest benchmarks |
+| `pnpm check` | Format and lint the entire repository with Biome |
+| `pnpm clean` | Remove generated workspace build output |
 
 The benchmark suite covers number and BigInt operations, verified round trips, UUID-shaped batch inputs, construction, padding, custom alphabets, and blocklist retries.
 

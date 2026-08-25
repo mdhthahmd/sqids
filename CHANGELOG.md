@@ -1,3 +1,8 @@
+## [2.0.0-next.2](https://github.com/mdhthahmd/sqids/compare/v2.0.0-next.1...v2.0.0-next.2) (2026-08-25)
+
+### Features
+
+* publish updated package documentation ([653e7e7](https://github.com/mdhthahmd/sqids/commit/653e7e7049d1c0aff78dd81565f015374a471208))
 ## [2.0.0](https://github.com/mdhthahmd/sqids/compare/v1.1.0...v2.0.0) (2026-08-25)
 
 ### ⚠ BREAKING CHANGES

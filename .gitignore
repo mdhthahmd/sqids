@@ -48,8 +48,8 @@ web_modules/
 *.tsbuildinfo
 
 # Generated package output
-/cjs/
-/esm/
+**/cjs/
+**/esm/
 
 # Optional npm cache directory
 .npm

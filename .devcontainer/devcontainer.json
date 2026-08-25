@@ -13,7 +13,11 @@
 	},
 	"customizations": {
 		"vscode": {
-			"extensions": ["biomejs.biome", "vitest.explorer"],
+			"extensions": [
+				"biomejs.biome",
+				"vitest.explorer",
+				"bruno-api-client.bruno"
+			],
 			"settings": {
 				"editor.defaultFormatter": "biomejs.biome",
 				"editor.formatOnSave": true

@@ -5,6 +5,10 @@ on:
     branches:
       - main
       - next
+  pull_request:
+    branches:
+      - main
+      - next
   workflow_dispatch:
     inputs:
       version:
@@ -45,6 +49,7 @@ jobs:
         with:
           node-version: 24.19.0
           cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -63,6 +68,6 @@ jobs:
 
       - name: Recover unpublished release
         if: github.event_name == 'workflow_dispatch'
-        run: pnpm publish --provenance --tag "$NPM_DIST_TAG" --no-git-checks
+        run: pnpm --dir lib publish --provenance --tag "$NPM_DIST_TAG" --no-git-checks
         env:
           NPM_DIST_TAG: ${{ inputs.dist-tag }}

@@ -1,0 +1,26 @@
+meta {
+  name: encode
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseURL}}/sqids/bigint/encode
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "numbers": [
+      "0",
+      "9007199254740992",
+      "18446744073709551615"
+    ]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

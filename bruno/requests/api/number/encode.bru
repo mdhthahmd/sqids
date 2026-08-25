@@ -1,0 +1,26 @@
+meta {
+  name: encode
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseURL}}/sqids/number/encode
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "numbers": [
+      1,
+      2,
+      3
+    ]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
