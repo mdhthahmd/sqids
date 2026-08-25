@@ -7,6 +7,12 @@
 ### Features
 
 * replace bigint option with mode ([0235ba6](https://github.com/mdhthahmd/sqids/commit/0235ba623a4860fe662d52f0286e0f1a036ac3d2))
+## [1.1.0](https://github.com/mdhthahmd/sqids/compare/v1.0.0...v1.1.0) (2026-08-24)
+
+### Features
+
+* publish updated package documentation ([653e7e7](https://github.com/mdhthahmd/sqids/commit/653e7e7049d1c0aff78dd81565f015374a471208))
+* publish updated package documentation ([6f7a32a](https://github.com/mdhthahmd/sqids/commit/6f7a32aa7bfde7f7679fbb2d8960192560364dc7))
 
 ## [1.1.0-next.1](https://github.com/mdhthahmd/sqids/compare/v1.0.0...v1.1.0-next.1) (2026-08-24)
 
