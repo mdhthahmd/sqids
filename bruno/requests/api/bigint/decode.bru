@@ -1,0 +1,20 @@
+meta {
+  name: decode
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseURL}}/sqids/bigint/decode/:sqid
+  body: none
+  auth: inherit
+}
+
+params:path {
+  sqid: rSC3GtyHS5S2lwmYs2rFdWg7
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

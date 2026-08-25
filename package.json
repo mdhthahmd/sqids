@@ -1,54 +1,27 @@
 {
-	"name": "@mdhthahmd/sqids",
+	"name": "sqids-monorepo",
+	"private": true,
 	"type": "module",
-	"version": "2.0.0-next.2",
-	"description": "Generate short unique IDs from numbers",
+	"description": "Sqids library and consumer examples",
 	"license": "MIT",
-	"author": "Midhath Ahmed <mdhthahmd@gmail.com>",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/mdhthahmd/sqids.git"
 	},
-	"sideEffects": false,
-	"exports": {
-		".": {
-			"require": {
-				"types": "./cjs/sqids.d.cts",
-				"default": "./cjs/sqids.cjs"
-			},
-			"import": {
-				"types": "./esm/sqids.d.mts",
-				"default": "./esm/sqids.mjs"
-			}
-		}
-	},
-	"main": "./cjs/sqids.cjs",
-	"module": "./esm/sqids.mjs",
-	"types": "./esm/sqids.d.mts",
-	"files": [
-		"cjs",
-		"esm"
-	],
-	"engines": {
-		"node": ">=18"
-	},
-	"publishConfig": {
-		"access": "public",
-		"provenance": true
-	},
 	"scripts": {
-		"benchmark": "vitest bench --run",
-		"build": "tsdown",
-		"dev": "tsdown --watch",
-		"clean": "rm -rf cjs esm dist coverage node_modules/.cache",
-		"check": "biome check --write",
+		"benchmark": "pnpm --dir lib benchmark",
+		"build": "pnpm -r --if-present build",
+		"clean": "pnpm -r --if-present clean",
+		"dev:lib": "pnpm --dir lib dev",
+		"dev:examples": "pnpm --parallel --filter './examples/*' dev",
+		"check": "biome check --write .",
 		"check:ci": "biome ci .",
-		"test": "vitest",
-		"test:code": "vitest run",
-		"test:coverage": "vitest run --coverage",
-		"test:types": "tsc --noEmit",
-		"test:package": "pnpm build && publint && pnpm pack --out package.tgz && attw package.tgz",
-		"test:all": "pnpm test:types && pnpm test:code && pnpm check:ci",
+		"test": "pnpm test:all",
+		"test:code": "pnpm -r --if-present test:code",
+		"test:coverage": "pnpm --dir lib test:coverage",
+		"test:types": "pnpm -r --if-present test:types",
+		"test:package": "pnpm --dir lib test:package",
+		"test:all": "pnpm build && pnpm test:types && pnpm test:code && pnpm check:ci",
 		"release": "semantic-release",
 		"release:dry": "semantic-release --dry-run --no-ci",
 		"prepare": "husky"
@@ -66,22 +39,16 @@
 		}
 	},
 	"devDependencies": {
-		"@arethetypeswrong/cli": "^0.18.5",
 		"@biomejs/biome": "2.5.10",
 		"@commitlint/cli": "^21.2.2",
 		"@commitlint/config-conventional": "^21.2.2",
 		"@semantic-release/changelog": "^7.0.0",
 		"@semantic-release/exec": "^7.1.0",
 		"@semantic-release/git": "^11.0.1",
-		"@vitest/coverage-v8": "^4.1.11",
 		"conventional-changelog-conventionalcommits": "^9.3.1",
 		"husky": "^9.1.7",
 		"lint-staged": "^17.3.0",
-		"publint": "^0.3.24",
-		"semantic-release": "^25.0.9",
-		"tsdown": "^0.22.14",
-		"typescript": "^7.0.2",
-		"vitest": "^4.1.11"
+		"semantic-release": "^25.0.9"
 	},
 	"lint-staged": {
 		"*.{ts,mts,cts,json,jsonc}": [

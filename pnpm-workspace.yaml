@@ -1,0 +1,11 @@
+packages:
+  - lib
+  - examples/*
+
+allowBuilds:
+  esbuild: true
+
+linkWorkspacePackages: false
+minimumReleaseAgeExclude:
+  - '@mdhthahmd/sqids@2.0.0'
+preferWorkspacePackages: false

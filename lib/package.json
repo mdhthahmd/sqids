@@ -1,0 +1,59 @@
+{
+	"name": "@mdhthahmd/sqids",
+	"type": "module",
+	"version": "2.0.0-next.2",
+	"description": "Generate short unique IDs from numbers",
+	"license": "MIT",
+	"author": "Midhath Ahmed <mdhthahmd@gmail.com>",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mdhthahmd/sqids.git",
+		"directory": "lib"
+	},
+	"sideEffects": false,
+	"exports": {
+		".": {
+			"require": {
+				"types": "./cjs/sqids.d.cts",
+				"default": "./cjs/sqids.cjs"
+			},
+			"import": {
+				"types": "./esm/sqids.d.mts",
+				"default": "./esm/sqids.mjs"
+			}
+		}
+	},
+	"main": "./cjs/sqids.cjs",
+	"module": "./esm/sqids.mjs",
+	"types": "./esm/sqids.d.mts",
+	"files": [
+		"cjs",
+		"esm"
+	],
+	"engines": {
+		"node": ">=18"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"benchmark": "vitest bench --run",
+		"build": "tsdown",
+		"dev": "tsdown --watch",
+		"clean": "rm -rf cjs esm coverage node_modules/.cache package.tgz",
+		"test": "vitest",
+		"test:code": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"test:types": "tsc --noEmit",
+		"test:package": "pnpm build && publint && pnpm pack --out package.tgz && attw package.tgz"
+	},
+	"devDependencies": {
+		"@arethetypeswrong/cli": "^0.18.5",
+		"@vitest/coverage-v8": "^4.1.11",
+		"publint": "^0.3.24",
+		"tsdown": "^0.22.14",
+		"typescript": "^7.0.2",
+		"vitest": "^4.1.11"
+	}
+}
