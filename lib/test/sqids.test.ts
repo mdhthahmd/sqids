@@ -1,6 +1,41 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import Sqids, { defaultOptions } from "../src/sqids";
 
+describe("options", () => {
+	it.each([null, [], "invalid", 1])(
+		"rejects non-object options: %j",
+		(options) => {
+			expect(() => new Sqids(options as never)).toThrow(
+				"Options must be an object",
+			);
+		},
+	);
+
+	it("rejects an invalid mode", () => {
+		expect(() => new Sqids({ mode: "invalid" as never })).toThrow(
+			'Mode must be either "number" or "bigint"',
+		);
+	});
+
+	it("rejects a non-string alphabet", () => {
+		expect(() => new Sqids({ alphabet: 123 as never })).toThrow(
+			"Alphabet must be a string",
+		);
+	});
+
+	it("rejects a non-Set blocklist", () => {
+		expect(() => new Sqids({ blocklist: [] as never })).toThrow(
+			"Blocklist must be a Set of strings",
+		);
+	});
+
+	it("rejects non-string blocklist entries", () => {
+		expect(() => new Sqids({ blocklist: new Set([123]) as never })).toThrow(
+			"Blocklist must contain only strings",
+		);
+	});
+});
+
 describe("default options", () => {
 	it("cannot change constructor defaults through the public export", () => {
 		const original = {
@@ -378,6 +413,20 @@ describe("encoding", () => {
 		];
 		const output = sqids.decode(sqids.encode(numbers));
 		expect(numbers).toEqual(output);
+	});
+
+	it("accepts readonly numbers", () => {
+		const numbers = [1, 2, 3] as const;
+		const sqids = new Sqids();
+
+		expect(sqids.decode(sqids.encode(numbers))).toEqual(numbers);
+	});
+
+	it("accepts a readonly blocklist", () => {
+		const blocklist: ReadonlySet<string> = new Set(["86Rf07"]);
+		const sqids = new Sqids({ blocklist });
+
+		expect(sqids.encode([1, 2, 3])).toBe("se8ojk");
 	});
 
 	it("encoding no numbers", () => {
