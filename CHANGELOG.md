@@ -1,3 +1,9 @@
+## [2.1.0-next.1](https://github.com/mdhthahmd/sqids/compare/v2.0.0...v2.1.0-next.1) (2026-08-26)
+
+### Features
+
+* improve api intellisense documentation ([0648d11](https://github.com/mdhthahmd/sqids/commit/0648d1124fbdb57679bc0347b969914506c30d08))
+
 ## [2.0.0-next.2](https://github.com/mdhthahmd/sqids/compare/v2.0.0-next.1...v2.0.0-next.2) (2026-08-25)
 
 ### Features
