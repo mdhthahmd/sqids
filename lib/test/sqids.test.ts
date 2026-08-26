@@ -1,5 +1,22 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
-import Sqids, { defaultOptions } from "../src/sqids";
+import Sqids, { defaultOptions, SqidsError } from "../src/sqids";
+
+describe("errors", () => {
+	it("exports a typed error that remains an Error", () => {
+		const getError = () => new Sqids({ mode: "invalid" as never });
+
+		expect(getError).toThrow(SqidsError);
+		expect(getError).toThrow(Error);
+		try {
+			getError();
+		} catch (error) {
+			expect(error).toMatchObject({
+				name: "SqidsError",
+				message: 'Mode must be either "number" or "bigint"',
+			});
+		}
+	});
+});
 
 describe("options", () => {
 	it.each([null, [], "invalid", 1])(
@@ -10,6 +27,21 @@ describe("options", () => {
 			);
 		},
 	);
+
+	it("rejects explicit null option values", () => {
+		expect(() => new Sqids({ alphabet: null as never })).toThrow(
+			"Alphabet must be a string",
+		);
+		expect(() => new Sqids({ minLength: null as never })).toThrow(
+			"Minimum length has to be between 0 and 255",
+		);
+		expect(() => new Sqids({ blocklist: null as never })).toThrow(
+			"Blocklist must be a Set of strings",
+		);
+		expect(() => new Sqids({ mode: null as never })).toThrow(
+			'Mode must be either "number" or "bigint"',
+		);
+	});
 
 	it("rejects an invalid mode", () => {
 		expect(() => new Sqids({ mode: "invalid" as never })).toThrow(
@@ -429,9 +461,21 @@ describe("encoding", () => {
 		expect(sqids.encode([1, 2, 3])).toBe("se8ojk");
 	});
 
+	it.each([null, {}, "123"])("rejects non-array input: %j", (numbers) => {
+		expect(() => new Sqids().encode(numbers as never)).toThrow(
+			"Numbers must be an array",
+		);
+	});
+
 	it("encoding no numbers", () => {
 		const sqids = new Sqids();
 		expect(sqids.encode([])).toBe("");
+	});
+
+	it.each([null, 123, []])("rejects non-string ID: %j", (id) => {
+		expect(() => new Sqids().decode(id as never)).toThrow(
+			"ID must be a string",
+		);
 	});
 
 	it("decoding empty string", () => {

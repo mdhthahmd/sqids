@@ -2,6 +2,11 @@ type SqidsInteger<Mode extends "number" | "bigint"> = Mode extends "bigint"
 	? bigint
 	: number;
 
+/** Error thrown when Sqids receives invalid input or configuration. */
+export class SqidsError extends Error {
+	override name = "SqidsError";
+}
+
 /** Configuration options for a {@link Sqids} instance. */
 export interface SqidsOptions<Mode extends "number" | "bigint" = "number"> {
 	/**
@@ -34,6 +39,19 @@ export interface SqidsOptions<Mode extends "number" | "bigint" = "number"> {
 }
 
 const maxUint64 = (1n << 64n) - 1n;
+
+function isReadonlySet(value: unknown): value is ReadonlySet<unknown> {
+	if (typeof value !== "object" || value === null) {
+		return false;
+	}
+
+	const candidate = value as Partial<ReadonlySet<unknown>>;
+	return (
+		typeof candidate.size === "number" &&
+		typeof candidate.has === "function" &&
+		typeof candidate[Symbol.iterator] === "function"
+	);
+}
 
 export const defaultOptions = {
 	alphabet: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
@@ -645,34 +663,46 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 				options === null ||
 				Array.isArray(options))
 		) {
-			throw new Error("Options must be an object");
+			throw new SqidsError("Options must be an object");
 		}
 
-		const alphabet = options?.alphabet ?? internalDefaultOptions.alphabet;
-		const minLength = options?.minLength ?? internalDefaultOptions.minLength;
-		const blocklist = options?.blocklist ?? internalDefaultOptions.blocklist;
-		const mode = options?.mode ?? internalDefaultOptions.mode;
+		const alphabet =
+			options?.alphabet === undefined
+				? internalDefaultOptions.alphabet
+				: options.alphabet;
+		const minLength =
+			options?.minLength === undefined
+				? internalDefaultOptions.minLength
+				: options.minLength;
+		const blocklist =
+			options?.blocklist === undefined
+				? internalDefaultOptions.blocklist
+				: options.blocklist;
+		const mode =
+			options?.mode === undefined ? internalDefaultOptions.mode : options.mode;
 
 		if (mode !== "number" && mode !== "bigint") {
-			throw new Error('Mode must be either "number" or "bigint"');
+			throw new SqidsError('Mode must be either "number" or "bigint"');
 		}
 		this.mode = mode as Mode;
 
 		if (typeof alphabet !== "string") {
-			throw new Error("Alphabet must be a string");
+			throw new SqidsError("Alphabet must be a string");
 		}
 
 		if (new Blob([alphabet]).size !== alphabet.length) {
-			throw new Error("Alphabet cannot contain multibyte characters");
+			throw new SqidsError("Alphabet cannot contain multibyte characters");
 		}
 
 		const minAlphabetLength = 3;
 		if (alphabet.length < minAlphabetLength) {
-			throw new Error(`Alphabet length must be at least ${minAlphabetLength}`);
+			throw new SqidsError(
+				`Alphabet length must be at least ${minAlphabetLength}`,
+			);
 		}
 
 		if (new Set(alphabet).size !== alphabet.length) {
-			throw new Error("Alphabet must contain unique characters");
+			throw new SqidsError("Alphabet must contain unique characters");
 		}
 
 		const minLengthLimit = 255;
@@ -681,20 +711,20 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 			minLength < 0 ||
 			minLength > minLengthLimit
 		) {
-			throw new Error(
+			throw new SqidsError(
 				`Minimum length has to be between 0 and ${minLengthLimit}`,
 			);
 		}
 
-		if (!(blocklist instanceof Set)) {
-			throw new Error("Blocklist must be a Set of strings");
+		if (!isReadonlySet(blocklist)) {
+			throw new SqidsError("Blocklist must be a Set of strings");
 		}
 
 		const filteredBlocklist = new Set<string>();
 		const alphabetChars = alphabet.toLowerCase().split("");
 		for (const word of blocklist) {
 			if (typeof word !== "string") {
-				throw new Error("Blocklist must contain only strings");
+				throw new SqidsError("Blocklist must contain only strings");
 			}
 			if (word.length >= 3) {
 				const wordLowercased = word.toLowerCase();
@@ -720,7 +750,8 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 	 *
 	 * @param numbers - The integers to encode, in the order they should be recovered.
 	 * @returns The encoded ID.
-	 * @throws If a value has the wrong type or is outside the supported range.
+	 * @throws If the input is not an array, or a value has the wrong type or is
+	 * outside the supported range.
 	 *
 	 * @example
 	 * ```ts
@@ -729,6 +760,10 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 	 * ```
 	 */
 	encode(numbers: readonly SqidsInteger<Mode>[]): string {
+		if (!Array.isArray(numbers)) {
+			throw new SqidsError("Numbers must be an array");
+		}
+
 		if (numbers.length === 0) {
 			return "";
 		}
@@ -740,7 +775,7 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 					number < 0n ||
 					number > this.maxValue()
 				) {
-					throw new Error(
+					throw new SqidsError(
 						`Encoding supports bigints between 0n and ${this.maxValue()}n`,
 					);
 				}
@@ -753,7 +788,7 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 				!Number.isSafeInteger(number) ||
 				number < 0
 			) {
-				throw new Error(
+				throw new SqidsError(
 					`Encoding supports numbers between 0 and ${this.maxValue()}`,
 				);
 			}
@@ -774,6 +809,7 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 	 *
 	 * @param id - The Sqids ID to decode.
 	 * @returns The decoded values as numbers, or as bigints in BigInt mode.
+	 * @throws If the ID is not a string.
 	 *
 	 * @example
 	 * ```ts
@@ -782,6 +818,10 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 	 * ```
 	 */
 	decode(id: string): SqidsInteger<Mode>[] {
+		if (typeof id !== "string") {
+			throw new SqidsError("ID must be a string");
+		}
+
 		const ret: bigint[] = [];
 
 		if (id === "") {
@@ -836,7 +876,7 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 
 	private encodeNumbers(numbers: bigint[], increment = 0): string {
 		if (increment > this.alphabet.length) {
-			throw new Error("Reached max attempts to re-generate the ID");
+			throw new SqidsError("Reached max attempts to re-generate the ID");
 		}
 
 		const alphabetLength = BigInt(this.alphabet.length);
@@ -891,13 +931,13 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 			const left = chars[i];
 			const last = chars[j];
 			if (left === undefined || last === undefined) {
-				throw new Error("Reached an invalid alphabet index");
+				throw new SqidsError("Reached an invalid alphabet index");
 			}
 			const r =
 				(i * j + left.charCodeAt(0) + last.charCodeAt(0)) % chars.length;
 			const right = chars[r];
 			if (right === undefined) {
-				throw new Error("Reached an invalid alphabet index");
+				throw new SqidsError("Reached an invalid alphabet index");
 			}
 			chars[i] = right;
 			chars[r] = left;
