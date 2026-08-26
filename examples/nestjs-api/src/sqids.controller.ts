@@ -1,4 +1,5 @@
 import {
+	BadRequestException,
 	Body,
 	Controller,
 	Get,
@@ -9,13 +10,23 @@ import {
 } from "@nestjs/common";
 import { SqidsService } from "./sqids.service";
 
-type NumberBody = {
-	numbers: number[];
-};
+function readNumbers(body: unknown): unknown {
+	if (typeof body !== "object" || body === null || !("numbers" in body)) {
+		throw new BadRequestException("Request body must contain a numbers array");
+	}
 
-type BigIntBody = {
-	numbers: string[];
-};
+	return body.numbers;
+}
+
+function asBadRequest(error: unknown): BadRequestException {
+	if (error instanceof BadRequestException) {
+		return error;
+	}
+
+	return new BadRequestException(
+		error instanceof Error ? error.message : "Invalid request body",
+	);
+}
 
 @Controller("sqids")
 export class SqidsController {
@@ -23,8 +34,12 @@ export class SqidsController {
 
 	@Post("number/encode")
 	@HttpCode(200)
-	encodeNumbers(@Body() body: NumberBody): { id: string } {
-		return { id: this.sqids.encodeNumbers(body.numbers) };
+	encodeNumbers(@Body() body: unknown): { id: string } {
+		try {
+			return { id: this.sqids.encodeNumbers(readNumbers(body)) };
+		} catch (error) {
+			throw asBadRequest(error);
+		}
 	}
 
 	@Get("number/decode/:id")
@@ -34,8 +49,12 @@ export class SqidsController {
 
 	@Post("bigint/encode")
 	@HttpCode(200)
-	encodeBigInts(@Body() body: BigIntBody): { id: string } {
-		return { id: this.sqids.encodeBigInts(body.numbers) };
+	encodeBigInts(@Body() body: unknown): { id: string } {
+		try {
+			return { id: this.sqids.encodeBigInts(readNumbers(body)) };
+		} catch (error) {
+			throw asBadRequest(error);
+		}
 	}
 
 	@Get("bigint/decode/:id")

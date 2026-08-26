@@ -36,4 +36,26 @@ describe("published Sqids package in Hono", () => {
 		assert.equal(decodeResponse.status, 200);
 		assert.deepEqual(await decodeResponse.json(), { numbers });
 	});
+	it("rejects malformed number requests", async () => {
+		const response = await app.request("/sqids/number/encode", {
+			method: "POST",
+			headers: { "content-type": "application/json" },
+			body: JSON.stringify({ numbers: [1, "2", 3] }),
+		});
+
+		assert.equal(response.status, 400);
+		assert.deepEqual(await response.json(), {
+			error: "Numbers must contain only numeric values",
+		});
+	});
+
+	it("rejects out-of-range BigInts", async () => {
+		const response = await app.request("/sqids/bigint/encode", {
+			method: "POST",
+			headers: { "content-type": "application/json" },
+			body: JSON.stringify({ numbers: ["18446744073709551616"] }),
+		});
+
+		assert.equal(response.status, 400);
+	});
 });
