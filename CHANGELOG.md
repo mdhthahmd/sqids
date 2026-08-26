@@ -1,14 +1,31 @@
 ## [2.2.0-next.1](https://github.com/mdhthahmd/sqids/compare/v2.1.2-next.2...v2.2.0-next.1) (2026-08-26)
+## [2.2.0](https://github.com/mdhthahmd/sqids/compare/v2.1.3...v2.2.0) (2026-08-26)
 
 ### Features
 
 * improve validation and release workflow ([2a3859d](https://github.com/mdhthahmd/sqids/commit/2a3859de3dcad63f6b14c7994bc9ea6dbf800fe6))
+
+## [2.1.3](https://github.com/mdhthahmd/sqids/compare/v2.1.2...v2.1.3) (2026-08-26)
+
+### Bug Fixes
+
+* validate options and refresh examples ([b00f1bb](https://github.com/mdhthahmd/sqids/commit/b00f1bbb7a7f2fa6c0a3716ec4d511e0446691cb))
+* validate options and refresh examples ([778f89b](https://github.com/mdhthahmd/sqids/commit/778f89b26076b6fb08bddad1a788a0c1a8ca7451))
 
 ## [2.1.2-next.2](https://github.com/mdhthahmd/sqids/compare/v2.1.2-next.1...v2.1.2-next.2) (2026-08-26)
 
 ### Bug Fixes
 
 * validate options and refresh examples ([778f89b](https://github.com/mdhthahmd/sqids/commit/778f89b26076b6fb08bddad1a788a0c1a8ca7451))
+
+## [2.1.2](https://github.com/mdhthahmd/sqids/compare/v2.1.1...v2.1.2) (2026-08-26)
+
+### Bug Fixes
+
+* harden defaults and example validation ([46431f2](https://github.com/mdhthahmd/sqids/commit/46431f2025d3ed1fe193258c5cc66703bd9c20af))
+* harden defaults and example validation ([d4771e7](https://github.com/mdhthahmd/sqids/commit/d4771e71c1e19d9688767cac8d967a878b8486c1))
+* harden defaults and example validation ([7c59ece](https://github.com/mdhthahmd/sqids/commit/7c59ece3f83e379b85ed51c2305fb83c365a35cf))
+* harden defaults and example validation ([#8](https://github.com/mdhthahmd/sqids/issues/8)) ([99f4bbe](https://github.com/mdhthahmd/sqids/commit/99f4bbeb19e0c1c9241e5af7d21c47457554e7b8))
 
 ## [2.1.2-next.1](https://github.com/mdhthahmd/sqids/compare/v2.1.1...v2.1.2-next.1) (2026-08-26)
 
