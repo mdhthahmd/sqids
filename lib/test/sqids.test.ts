@@ -1,6 +1,35 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import Sqids, { defaultOptions } from "../src/sqids";
 
+describe("default options", () => {
+	it("cannot change constructor defaults through the public export", () => {
+		const original = {
+			alphabet: defaultOptions.alphabet,
+			minLength: defaultOptions.minLength,
+			mode: defaultOptions.mode,
+			blocklist: new Set(defaultOptions.blocklist),
+		};
+
+		try {
+			defaultOptions.alphabet = "abc";
+			defaultOptions.minLength = 20;
+			defaultOptions.blocklist.clear();
+
+			const sqids = new Sqids();
+			expect(sqids.encode([1, 2, 3])).toBe("86Rf07");
+			expect(sqids.encode([4_572_721])).toBe("JExTR");
+		} finally {
+			defaultOptions.alphabet = original.alphabet;
+			defaultOptions.minLength = original.minLength;
+			defaultOptions.mode = original.mode;
+			defaultOptions.blocklist.clear();
+			for (const word of original.blocklist) {
+				defaultOptions.blocklist.add(word);
+			}
+		}
+	});
+});
+
 describe("alphabet", () => {
 	it("simple", () => {
 		const sqids = new Sqids({
@@ -378,6 +407,15 @@ describe("encoding", () => {
 });
 
 describe("min length", () => {
+	it.each([-1, 256, 1.5, Number.NaN, Number.POSITIVE_INFINITY])(
+		"rejects invalid value %s",
+		(minLength) => {
+			expect(() => new Sqids({ minLength })).toThrow(
+				"Minimum length has to be between 0 and 255",
+			);
+		},
+	);
+
 	it("simple", () => {
 		const sqids = new Sqids({
 			minLength: defaultOptions.alphabet.length,

@@ -8,7 +8,14 @@ export class SqidsService {
 	private readonly numberSqids = new Sqids();
 	private readonly bigintSqids = new Sqids(bigintOptions);
 
-	encodeNumbers(numbers: number[]): string {
+	encodeNumbers(numbers: unknown): string {
+		if (
+			!Array.isArray(numbers) ||
+			!numbers.every((number) => typeof number === "number")
+		) {
+			throw new Error("Numbers must contain only numeric values");
+		}
+
 		return this.numberSqids.encode(numbers);
 	}
 
@@ -16,7 +23,14 @@ export class SqidsService {
 		return this.numberSqids.decode(id);
 	}
 
-	encodeBigInts(numbers: string[]): string {
+	encodeBigInts(numbers: unknown): string {
+		if (
+			!Array.isArray(numbers) ||
+			!numbers.every((number) => typeof number === "string")
+		) {
+			throw new Error("Numbers must contain only decimal strings");
+		}
+
 		return this.bigintSqids.encode(numbers.map(BigInt));
 	}
 

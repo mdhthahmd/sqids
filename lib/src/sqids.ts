@@ -2,10 +2,34 @@ type SqidsInteger<Mode extends "number" | "bigint"> = Mode extends "bigint"
 	? bigint
 	: number;
 
+/** Configuration options for a {@link Sqids} instance. */
 export interface SqidsOptions<Mode extends "number" | "bigint" = "number"> {
+	/**
+	 * Characters used to generate IDs. Must contain at least three unique,
+	 * single-byte characters.
+	 *
+	 * @defaultValue `defaultOptions.alphabet`
+	 */
 	alphabet?: string;
+	/**
+	 * Minimum length of generated IDs. Must be an integer between 0 and 255.
+	 *
+	 * @defaultValue 0
+	 */
 	minLength?: number;
+	/**
+	 * Words and IDs that generated IDs should avoid. Providing this option
+	 * replaces the default blocklist; use an empty set to disable blocking.
+	 *
+	 * @defaultValue `defaultOptions.blocklist`
+	 */
 	blocklist?: Set<string>;
+	/**
+	 * Integer type accepted by {@link Sqids.encode} and returned by
+	 * {@link Sqids.decode}. BigInt mode supports values through `2n ** 64n - 1n`.
+	 *
+	 * @defaultValue `"number"`
+	 */
 	mode?: Mode;
 }
 
@@ -579,6 +603,13 @@ export const defaultOptions = {
 	]),
 };
 
+const internalDefaultOptions = {
+	alphabet: defaultOptions.alphabet,
+	minLength: defaultOptions.minLength,
+	mode: defaultOptions.mode,
+	blocklist: new Set(defaultOptions.blocklist),
+};
+
 /**
  * Encodes one or more non-negative integers into short, deterministic IDs and
  * decodes those IDs back into their original values.
@@ -608,11 +639,11 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 	private mode: Mode;
 
 	constructor(options?: SqidsOptions<Mode>) {
-		const alphabet = options?.alphabet ?? defaultOptions.alphabet;
-		const minLength = options?.minLength ?? defaultOptions.minLength;
-		const blocklist = options?.blocklist ?? defaultOptions.blocklist;
+		const alphabet = options?.alphabet ?? internalDefaultOptions.alphabet;
+		const minLength = options?.minLength ?? internalDefaultOptions.minLength;
+		const blocklist = options?.blocklist ?? internalDefaultOptions.blocklist;
 
-		this.mode = (options?.mode ?? defaultOptions.mode) as Mode;
+		this.mode = (options?.mode ?? internalDefaultOptions.mode) as Mode;
 
 		if (new Blob([alphabet]).size !== alphabet.length) {
 			throw new Error("Alphabet cannot contain multibyte characters");
@@ -629,7 +660,7 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 
 		const minLengthLimit = 255;
 		if (
-			typeof minLength !== "number" ||
+			!Number.isInteger(minLength) ||
 			minLength < 0 ||
 			minLength > minLengthLimit
 		) {

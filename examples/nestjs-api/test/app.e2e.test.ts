@@ -46,4 +46,22 @@ describe("published Sqids package in NestJS", () => {
 			.expect(200);
 		assert.deepEqual(decoded.body, { numbers });
 	});
+	it("rejects malformed number requests", async () => {
+		const response = await request(app.getHttpServer())
+			.post("/sqids/number/encode")
+			.send({ numbers: [1, "2", 3] })
+			.expect(400);
+
+		assert.equal(
+			response.body.message,
+			"Numbers must contain only numeric values",
+		);
+	});
+
+	it("rejects out-of-range BigInts", async () => {
+		await request(app.getHttpServer())
+			.post("/sqids/bigint/encode")
+			.send({ numbers: ["18446744073709551616"] })
+			.expect(400);
+	});
 });

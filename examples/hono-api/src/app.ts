@@ -1,23 +1,40 @@
 import Sqids, { type SqidsOptions } from "@mdhthahmd/sqids";
 import { Hono } from "hono";
 
-type NumberBody = {
-	numbers: number[];
-};
-
-type BigIntBody = {
-	numbers: string[];
-};
-
 const bigintOptions: SqidsOptions<"bigint"> = { mode: "bigint" };
 const numberSqids = new Sqids();
 const bigintSqids = new Sqids(bigintOptions);
 
 const app = new Hono();
 
+function readNumbers(body: unknown): unknown[] {
+	if (
+		typeof body !== "object" ||
+		body === null ||
+		!("numbers" in body) ||
+		!Array.isArray(body.numbers)
+	) {
+		throw new Error("Request body must contain a numbers array");
+	}
+
+	return body.numbers;
+}
+
+function errorMessage(error: unknown): string {
+	return error instanceof Error ? error.message : "Invalid request body";
+}
+
 app.post("/sqids/number/encode", async (context) => {
-	const body = await context.req.json<NumberBody>();
-	return context.json({ id: numberSqids.encode(body.numbers) });
+	try {
+		const numbers = readNumbers(await context.req.json<unknown>());
+		if (!numbers.every((number) => typeof number === "number")) {
+			throw new Error("Numbers must contain only numeric values");
+		}
+
+		return context.json({ id: numberSqids.encode(numbers) });
+	} catch (error) {
+		return context.json({ error: errorMessage(error) }, 400);
+	}
 });
 
 app.get("/sqids/number/decode/:id", (context) => {
@@ -25,9 +42,16 @@ app.get("/sqids/number/decode/:id", (context) => {
 });
 
 app.post("/sqids/bigint/encode", async (context) => {
-	const body = await context.req.json<BigIntBody>();
-	const numbers = body.numbers.map(BigInt);
-	return context.json({ id: bigintSqids.encode(numbers) });
+	try {
+		const values = readNumbers(await context.req.json<unknown>());
+		if (!values.every((value) => typeof value === "string")) {
+			throw new Error("Numbers must contain only decimal strings");
+		}
+
+		return context.json({ id: bigintSqids.encode(values.map(BigInt)) });
+	} catch (error) {
+		return context.json({ error: errorMessage(error) }, 400);
+	}
 });
 
 app.get("/sqids/bigint/decode/:id", (context) => {
