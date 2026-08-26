@@ -3,6 +3,12 @@
 ### Bug Fixes
 
 * include readme in published package ([c55da2f](https://github.com/mdhthahmd/sqids/commit/c55da2f1f600267dfc2829d80dbfdfe025759e25))
+## [2.1.0](https://github.com/mdhthahmd/sqids/compare/v2.0.0...v2.1.0) (2026-08-26)
+
+### Features
+
+* improve api intellisense documentation ([e441a89](https://github.com/mdhthahmd/sqids/commit/e441a8945d5a708a19fe312111e8d508a031e723))
+* improve api intellisense documentation ([0648d11](https://github.com/mdhthahmd/sqids/commit/0648d1124fbdb57679bc0347b969914506c30d08))
 
 ## [2.1.0-next.1](https://github.com/mdhthahmd/sqids/compare/v2.0.0...v2.1.0-next.1) (2026-08-26)
 
