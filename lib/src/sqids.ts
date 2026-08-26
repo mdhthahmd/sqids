@@ -23,7 +23,7 @@ export interface SqidsOptions<Mode extends "number" | "bigint" = "number"> {
 	 *
 	 * @defaultValue `defaultOptions.blocklist`
 	 */
-	blocklist?: Set<string>;
+	blocklist?: ReadonlySet<string>;
 	/**
 	 * Integer type accepted by {@link Sqids.encode} and returned by
 	 * {@link Sqids.decode}. BigInt mode supports values through `2n ** 64n - 1n`.
@@ -639,11 +639,28 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 	private mode: Mode;
 
 	constructor(options?: SqidsOptions<Mode>) {
+		if (
+			options !== undefined &&
+			(typeof options !== "object" ||
+				options === null ||
+				Array.isArray(options))
+		) {
+			throw new Error("Options must be an object");
+		}
+
 		const alphabet = options?.alphabet ?? internalDefaultOptions.alphabet;
 		const minLength = options?.minLength ?? internalDefaultOptions.minLength;
 		const blocklist = options?.blocklist ?? internalDefaultOptions.blocklist;
+		const mode = options?.mode ?? internalDefaultOptions.mode;
 
-		this.mode = (options?.mode ?? internalDefaultOptions.mode) as Mode;
+		if (mode !== "number" && mode !== "bigint") {
+			throw new Error('Mode must be either "number" or "bigint"');
+		}
+		this.mode = mode as Mode;
+
+		if (typeof alphabet !== "string") {
+			throw new Error("Alphabet must be a string");
+		}
 
 		if (new Blob([alphabet]).size !== alphabet.length) {
 			throw new Error("Alphabet cannot contain multibyte characters");
@@ -669,9 +686,16 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 			);
 		}
 
+		if (!(blocklist instanceof Set)) {
+			throw new Error("Blocklist must be a Set of strings");
+		}
+
 		const filteredBlocklist = new Set<string>();
 		const alphabetChars = alphabet.toLowerCase().split("");
 		for (const word of blocklist) {
+			if (typeof word !== "string") {
+				throw new Error("Blocklist must contain only strings");
+			}
 			if (word.length >= 3) {
 				const wordLowercased = word.toLowerCase();
 				const wordChars = wordLowercased.split("");
@@ -704,7 +728,7 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 	 * const id = sqids.encode([1, 2, 3]); // "86Rf07"
 	 * ```
 	 */
-	encode(numbers: SqidsInteger<Mode>[]): string {
+	encode(numbers: readonly SqidsInteger<Mode>[]): string {
 		if (numbers.length === 0) {
 			return "";
 		}
