@@ -1,3 +1,9 @@
+## [2.1.2-next.2](https://github.com/mdhthahmd/sqids/compare/v2.1.2-next.1...v2.1.2-next.2) (2026-08-26)
+
+### Bug Fixes
+
+* validate options and refresh examples ([778f89b](https://github.com/mdhthahmd/sqids/commit/778f89b26076b6fb08bddad1a788a0c1a8ca7451))
+
 ## [2.1.2-next.1](https://github.com/mdhthahmd/sqids/compare/v2.1.1...v2.1.2-next.1) (2026-08-26)
 
 ### Bug Fixes
