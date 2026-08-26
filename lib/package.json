@@ -46,7 +46,9 @@
 		"test:code": "vitest run",
 		"test:coverage": "vitest run --coverage",
 		"test:types": "tsc --noEmit",
-		"test:package": "pnpm build && publint && pnpm pack --out package.tgz && attw package.tgz"
+		"test:package": "pnpm build && publint && pnpm pack --out package.tgz && tar -tf package.tgz | grep -q '^package/README.md$' && tar -xOf package.tgz package/README.md | cmp ../README.md - && attw package.tgz",
+		"prepack": "cp ../README.md README.md",
+		"postpack": "rm -f README.md"
 	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.18.5",
@@ -55,5 +57,14 @@
 		"tsdown": "^0.22.14",
 		"typescript": "^7.0.2",
 		"vitest": "^4.1.11"
-	}
+	},
+	"keywords": [
+		"sqids",
+		"short-id",
+		"id-generator",
+		"url-safe",
+		"encoding",
+		"bigint"
+	],
+	"homepage": "https://github.com/mdhthahmd/sqids#readme"
 }
