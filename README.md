@@ -172,7 +172,7 @@ const numbers = sqids.decode(id); // [1, 2, 3]
 
 ## 🧪 Example APIs
 
-The workspace includes two consumer applications that use the published `@mdhthahmd/sqids@2.1.0-next.1` package:
+The workspace includes two consumer applications that use the published `@mdhthahmd/sqids` package:
 
 - `examples/hono-api` — Node.js ESM API on port 3000
 - `examples/nestjs-api` — NestJS CommonJS API on port 3001
