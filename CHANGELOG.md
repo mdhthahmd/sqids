@@ -1,3 +1,9 @@
+## [2.2.0](https://github.com/mdhthahmd/sqids/compare/v2.1.3...v2.2.0) (2026-08-26)
+
+### Features
+
+* improve validation and release workflow ([2a3859d](https://github.com/mdhthahmd/sqids/commit/2a3859de3dcad63f6b14c7994bc9ea6dbf800fe6))
+
 ## [2.1.3](https://github.com/mdhthahmd/sqids/compare/v2.1.2...v2.1.3) (2026-08-26)
 
 ### Bug Fixes
