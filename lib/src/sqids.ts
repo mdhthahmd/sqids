@@ -579,6 +579,28 @@ export const defaultOptions = {
 	]),
 };
 
+/**
+ * Encodes one or more non-negative integers into short, deterministic IDs and
+ * decodes those IDs back into their original values.
+ *
+ * Sqids is not encryption: generated IDs should not be used to hide secrets or
+ * sensitive information. Use `mode: "bigint"` for values larger than
+ * `Number.MAX_SAFE_INTEGER`.
+ *
+ * @example Basic usage
+ * ```ts
+ * const sqids = new Sqids();
+ * const id = sqids.encode([1, 2, 3]);
+ * const numbers = sqids.decode(id); // [1, 2, 3]
+ * ```
+ *
+ * @example BigInt usage
+ * ```ts
+ * const sqids = new Sqids({ mode: "bigint" });
+ * const id = sqids.encode([1n, 2n, 3n]);
+ * const numbers = sqids.decode(id); // [1n, 2n, 3n]
+ * ```
+ */
 export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 	private alphabet: string;
 	private minLength: number;
@@ -634,6 +656,23 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 		this.blocklist = filteredBlocklist;
 	}
 
+	/**
+	 * Encodes an array of non-negative integers into a deterministic ID.
+	 *
+	 * In the default number mode, every value must be a safe integer. In BigInt
+	 * mode, every value must be between `0n` and `2n ** 64n - 1n`. An empty array
+	 * produces an empty string.
+	 *
+	 * @param numbers - The integers to encode, in the order they should be recovered.
+	 * @returns The encoded ID.
+	 * @throws If a value has the wrong type or is outside the supported range.
+	 *
+	 * @example
+	 * ```ts
+	 * const sqids = new Sqids();
+	 * const id = sqids.encode([1, 2, 3]); // "86Rf07"
+	 * ```
+	 */
 	encode(numbers: SqidsInteger<Mode>[]): string {
 		if (numbers.length === 0) {
 			return "";
@@ -670,6 +709,23 @@ export default class Sqids<Mode extends "number" | "bigint" = "number"> {
 		return this.encodeNumbers(normalizedNumbers);
 	}
 
+	/**
+	 * Decodes an ID into its original integers.
+	 *
+	 * Returns an empty array when the ID is empty, contains a character outside
+	 * the configured alphabet, or represents a value unsupported by the current
+	 * mode. More than one ID can decode to the same values; re-encode the result
+	 * and compare IDs when canonical input is required.
+	 *
+	 * @param id - The Sqids ID to decode.
+	 * @returns The decoded values as numbers, or as bigints in BigInt mode.
+	 *
+	 * @example
+	 * ```ts
+	 * const sqids = new Sqids();
+	 * const numbers = sqids.decode("86Rf07"); // [1, 2, 3]
+	 * ```
+	 */
 	decode(id: string): SqidsInteger<Mode>[] {
 		const ret: bigint[] = [];
 
