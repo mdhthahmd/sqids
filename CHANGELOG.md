@@ -1,3 +1,9 @@
+## [2.1.2-next.1](https://github.com/mdhthahmd/sqids/compare/v2.1.1...v2.1.2-next.1) (2026-08-26)
+
+### Bug Fixes
+
+* harden defaults and example validation ([7c59ece](https://github.com/mdhthahmd/sqids/commit/7c59ece3f83e379b85ed51c2305fb83c365a35cf))
+
 ## [2.1.1-next.2](https://github.com/mdhthahmd/sqids/compare/v2.1.1-next.1...v2.1.1-next.2) (2026-08-26)
 
 ### Bug Fixes
