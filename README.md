@@ -170,6 +170,22 @@ const id = sqids.encode([1, 2, 3]); // "se8ojk"
 const numbers = sqids.decode(id); // [1, 2, 3]
 ```
 
+### Error handling
+
+All validation and encoding failures throw `SqidsError`, which extends the built-in `Error` class.
+
+```javascript
+import Sqids, { SqidsError } from "@mdhthahmd/sqids";
+
+try {
+  new Sqids().encode([-1]);
+} catch (error) {
+  if (error instanceof SqidsError) {
+    console.error(error.message);
+  }
+}
+```
+
 ## 🧪 Example APIs
 
 The workspace includes two consumer applications that use the published `@mdhthahmd/sqids` package:
@@ -232,6 +248,17 @@ pnpm test:all
 | `pnpm clean` | Remove generated workspace build output |
 
 The benchmark suite covers number and BigInt operations, verified round trips, UUID-shaped batch inputs, construction, padding, custom alphabets, and blocklist retries.
+
+## 🚢 Release workflow
+
+Semantic-release owns package versions, tags, changelog entries, and publication. Use Conventional Commit messages on `next`; `fix:` creates a patch prerelease and `feat:` creates a minor prerelease.
+
+Promote `next` to `main` using exactly one of these strategies:
+
+- Regular merge: preserve the original commits and use a non-releasing merge message such as `chore: merge next into main`. Semantic-release analyzes the preserved `fix:` and `feat:` commits.
+- Squash merge: use one Conventional Commit PR title, such as `fix: validate package inputs`. The squash commit replaces the original commits, so its title determines the stable release.
+
+Do not squash and then merge the same changes again. Do not use `fix:` or `feat:` for a regular merge commit when the preserved commits already contain those types; doing so duplicates the release note. After a stable release, update the local `main` and `next` branches independently before starting the next prerelease.
 
 ## 📄 License
 
