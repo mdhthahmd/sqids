@@ -1,3 +1,4 @@
+## [2.2.0-next.1](https://github.com/mdhthahmd/sqids/compare/v2.1.2-next.2...v2.2.0-next.1) (2026-08-26)
 ## [2.2.0](https://github.com/mdhthahmd/sqids/compare/v2.1.3...v2.2.0) (2026-08-26)
 
 ### Features
