@@ -20,7 +20,7 @@
 
 <p align="center">
   <a href="https://vitest.dev/"><img alt="Vitest 4" src="https://img.shields.io/badge/Vitest-4.1-6E9F18?logo=vitest&logoColor=white"></a>
-  <a href="https://biomejs.dev/"><img alt="Biome 2" src="https://img.shields.io/badge/Biome-2.5-60A5FA?logo=biome&logoColor=white"></a>
+  <a href="https://oxc.rs/"><img alt="Oxc" src="https://img.shields.io/badge/Oxc-Oxlint%20%2B%20Oxfmt-7C3AED"></a>
   <a href="https://commitlint.js.org/"><img alt="Commitlint 21" src="https://img.shields.io/badge/Commitlint-21.2-000000?logo=commitlint&logoColor=white"></a>
   <a href="https://tsdown.dev/"><img alt="tsdown 0.22" src="https://img.shields.io/badge/tsdown-0.22-F7B93E"></a>
   <a href="https://semantic-release.gitbook.io/"><img alt="semantic-release 25" src="https://img.shields.io/badge/semantic--release-25-E10079?logo=semanticrelease&logoColor=white"></a>
@@ -125,8 +125,7 @@ console.log(decoded); // [0n, 9007199254740992n, 18446744073709551615n]
 Number mode and BigInt mode generate the same ID for values within the safe-integer range:
 
 ```javascript
-new Sqids().encode([1, 2, 3]) ===
-  new Sqids({ mode: "bigint" }).encode([1n, 2n, 3n]); // true
+new Sqids().encode([1, 2, 3]) === new Sqids({ mode: "bigint" }).encode([1n, 2n, 3n]); // true
 ```
 
 ## ⚙️ Configuration
@@ -190,8 +189,8 @@ try {
 
 The workspace includes two consumer applications that use the published `@mdhthahmd/sqids` package:
 
-- `examples/hono-api` — Node.js ESM API on port 3000
-- `examples/nestjs-api` — NestJS CommonJS API on port 3001
+- `examples/hono` — Node.js ESM API on port 3000
+- `examples/nestjs` — NestJS 12 ESM API on port 3001
 
 Start both APIs in watch mode:
 
@@ -205,7 +204,7 @@ For manual testing, open `bruno/requests/api` as a collection in Bruno and selec
 
 ### Dev Container
 
-The recommended setup is the repository's Dev Container. It provides Node.js 24.19, pnpm 11.22, GitHub CLI, Biome, Vitest Explorer, Bruno, and the configured coding-agent tools.
+The recommended setup is the repository's Dev Container. It provides Node.js 24.19, pnpm 11.22, GitHub CLI, Oxc, Vitest Explorer, Bruno, and the configured coding-agent tools.
 
 1. Install Docker and a Dev Container-compatible editor, such as VS Code with the Dev Containers extension.
 2. Clone the repository and open it in VS Code.
@@ -226,26 +225,29 @@ pnpm test:all
 
 ### Workspace layout
 
-| Path | Purpose |
-| --- | --- |
-| `lib` | Published Sqids package, source, tests, and benchmarks |
-| `examples/hono-api` | ESM consumer example |
-| `examples/nestjs-api` | CommonJS consumer example |
-| `bruno/requests/api` | Bruno collection for both example APIs |
+| Path                 | Purpose                                                |
+| -------------------- | ------------------------------------------------------ |
+| `lib`                | Published Sqids package, source, tests, and benchmarks |
+| `examples/hono`      | ESM consumer example                                   |
+| `examples/nestjs`    | NestJS 12 ESM consumer example                         |
+| `bruno/requests/api` | Bruno collection for both example APIs                 |
 
 ### Commands
 
-| Command | Description |
-| --- | --- |
-| `pnpm build` | Build the library and all example applications |
-| `pnpm dev:lib` | Rebuild the library in watch mode |
-| `pnpm dev:examples` | Start both example APIs in watch mode |
-| `pnpm test:all` | Build, type-check, test, and run Biome CI checks |
-| `pnpm test:coverage` | Run the library tests with coverage |
-| `pnpm test:package` | Validate the packed npm package and its types |
-| `pnpm benchmark` | Run the library's Vitest benchmarks |
-| `pnpm check` | Format and lint the entire repository with Biome |
-| `pnpm clean` | Remove generated workspace build output |
+| Command              | Description                                            |
+| -------------------- | ------------------------------------------------------ |
+| `pnpm build`         | Build the library and all example applications         |
+| `pnpm dev:lib`       | Rebuild the library in watch mode                      |
+| `pnpm dev:examples`  | Start both example APIs in watch mode                  |
+| `pnpm test:all`      | Build, type-check, test, lint, and check formatting    |
+| `pnpm test:coverage` | Run the library tests with coverage                    |
+| `pnpm test:package`  | Validate the packed npm package and its types          |
+| `pnpm benchmark`     | Run the library's Vitest benchmarks                    |
+| `pnpm format`        | Format the entire repository with Oxfmt                |
+| `pnpm format:check`  | Check repository formatting without writing files      |
+| `pnpm lint`          | Lint the entire repository with Oxlint                 |
+| `pnpm check`         | Apply safe lint fixes and format the entire repository |
+| `pnpm clean`         | Remove generated workspace build output                |
 
 The benchmark suite covers number and BigInt operations, verified round trips, UUID-shaped batch inputs, construction, padding, custom alphabets, and blocklist retries.
 

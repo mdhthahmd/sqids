@@ -1,28 +1,28 @@
 {
-	"name": "sqids",
-	"image": "mcr.microsoft.com/devcontainers/base:trixie",
-	"features": {
-		"ghcr.io/devcontainers/features/node:2": {
-			"version": "24.19.0",
-			"nvmVersion": "0.40.7",
-			"pnpmVersion": "11.22.0"
-		},
-		"ghcr.io/devcontainers/features/github-cli:1": {},
-		"ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
-		"ghcr.io/dirien/devcontainer-feature-codex/codex:0": {}
-	},
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"biomejs.biome",
-				"vitest.explorer",
-				"bruno-api-client.bruno"
-			],
-			"settings": {
-				"editor.defaultFormatter": "biomejs.biome",
-				"editor.formatOnSave": true
-			}
-		}
-	},
-	"postCreateCommand": "pnpm install --frozen-lockfile"
+  "name": "sqids",
+  "image": "mcr.microsoft.com/devcontainers/base:trixie",
+  "features": {
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "24.19.0",
+      "nvmVersion": "0.40.7",
+      "pnpmVersion": "11.22.0"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
+    "ghcr.io/dirien/devcontainer-feature-codex/codex:0": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["oxc.oxc-vscode", "vitest.explorer", "bruno-api-client.bruno"],
+      "settings": {
+        "oxc.typeAware": true,
+        "editor.defaultFormatter": "oxc.oxc-vscode",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.oxc": "always"
+        }
+      }
+    }
+  },
+  "postCreateCommand": "pnpm install --frozen-lockfile"
 }
